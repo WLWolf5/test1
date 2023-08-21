@@ -1,0 +1,83 @@
+name: Downloader
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+
+env:
+ TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Initialization environment
+      id: init
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo timedatectl set-timezone "$TZ"
+
+#    - name: config push
+#      env:
+#        PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+#      if: ${{ env.PUSH_TOKEN != '' }}
+#      run: |
+#        echo "PUSH_TOKEN=${{ secrets.PUSH_TOKEN }}" >> $GITHUB_ENV
+#        git config --global user.email "email@aa.com"
+#        git config --global user.name "ZarkZero"
+
+    - name: Clone source code
+      run: |
+       mkdir work
+       cd work
+       curl https://storage.googleapis.com/git-repo-downloads/repo -o repo
+       chmod +x repo
+       ./repo init -u https://git.codelinaro.org/clo/qsdk/releases/manifest/qstak -b release -m AU_LINUX_QSDK_NHSS.QSDK.11.5.5_TARGET_ALL.11.5.5.7846.045.xml 
+       ls
+       ./repo sync -j16 --no-tags -c
+       ls
+       mkdir upload
+       7z a upload/qsdk-11.5.7z * -x\!repo -xr\!upload -m0=LZMA2 -mmt=on
+       pwd
+
+    - name: Upload
+      uses: actions/upload-artifact@main
+      with:
+        name: package
+        path: work/upload
+
+    - name: Push Files
+      run: |
+       git config --global user.email "github-actions[bot]@users.noreply.github.com"
+       git config --global user.name "github-actions[bot]"
+       git clone https://github.com/WLWolf5/qsdk-compiler.git
+       cd qsdk-compiler
+       mv ../work/upload/* .
+       git add .
+       git commit -m 'Action Upload Commit'
+       git remote remove origin
+       git remote add origin https://WLWolf5:${{ secrets.PUSH_TOKEN }}@github.com/WLWolf5/test5
+       git push -u origin master
+
+
+#AU_LINUX_QSDK_NHSS.QSDK.12.2.5.R2_TARGET_ALL.12.02.05.680.016.xml
+#AU_LINUX_QSDK_NHSS.QSDK.12.2.R2_TARGET_ALL.12.02.02.1779.025.xml
+#Alternatively
+#caf_AU_LINUX_QSDK_NHSS.QSDK.11.4_TARGET_ALL.12.0.6938.000.6969.xml
+#caf_AU_LINUX_QSDK_NHSS.QSDK.11.3_TARGET_ALL.12.0.5871.00.6204.xml
+#caf_AU_LINUX_QSDK_NHSS.QSDK.11.2_TARGET_ALL.12.0.4959.5165.xml
+#caf_AU_LINUX_QSDK_NHSS.QSDK.11.1_TARGET_ALL.12.0.4170.001.5167.xml
+#caf_AU_LINUX_QSDK_NHSS.QSDK.11.1.R1_TARGET_ALL.12.0.4093.004.xml
+#caf_AU_LINUX_QSDK_NHSS.QSDK.11.0_TARGET_ALL.11.0.3821.4517.xml
+#caf_AU_LINUX_QSDK_NHSS.QSDK.11.5.0.5.R7_TARGET_ALL.12.0.000.934.009.xml
+#caf_AU_LINUX_QSDK_NHSS.QSDK.12.1.R2_TARGET_ALL.12.1.02.841.013.xml
