@@ -1,0 +1,37 @@
+name: SSH Connect
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run with debugging enabled'
+        required: false
+        default: false
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo timedatectl set-timezone "$TZ"
+
+    - name: Initialization environment
+      run: |
+        wget https://raw.githubusercontent.com/WLWolf5/new/master/
+        git clone --depth=1 https://github.com/Samueli924/chaoxing
+        cd chaoxing
+        pip install -r requirements.txt
+        python main.py -c xxt-config.ini -l 239816174
+        
