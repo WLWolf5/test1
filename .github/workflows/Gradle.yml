@@ -22,13 +22,16 @@ jobs:
     - name: Download Source
       run: |
         git clone https://github.com/TeamTwilight/twilightforest
-        cd twilightforest
 
     - name: 设置权限
-      run: chmod +x gradlew
+      run: |
+        cd twilightforest
+        chmod +x gradlew
 
     - name: 用Gradle构建
-      run: ./gradlew build
+      run: |
+        cd twilightforest
+        ./gradlew build
 
     - name: 上传Jar
       uses: actions/upload-artifact@v2
