@@ -21,25 +21,25 @@ jobs:
 
     - name: Download Source
       run: |
-        git clone https://github.com/TeamTwilight/twilightforest
+        git clone https://github.com/RazorDevs/Deep-Aether
 
     - name: 设置权限
       run: |
-        cd twilightforest
+        cd Deep-Aether
         chmod +x gradlew
 
     - name: 修改编译版本
       run: |
-        cd twilightforest
-        sed -i 's/1\.20\.4/1.20.1/g;s/47\.1\.70/47.1.81/g;s/7\.0\.0-beta\.2/5.2.0-beta.3/g' gradle.properties
+        #cd Deep-Aether
+        #sed -i 's/1\.20\.4/1.20.1/g;s/47\.1\.70/47.1.81/g;s/7\.0\.0-beta\.2/5.2.0-beta.3/g' gradle.properties
 
     - name: 用Gradle构建
       run: |
-        cd twilightforest
+        cd Deep-Aether
         ./gradlew build
 
     - name: 上传Jar
       uses: actions/upload-artifact@v2
       with:
         name: "Result"
-        path: twilightforest/build/libs
+        path: Deep-Aether/build/libs
