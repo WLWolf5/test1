@@ -1,0 +1,37 @@
+name: MC Mod 构建
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: 设置JDK8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 8
+
+    - name: Download Source
+      run: |
+        git clone https://github.com/TeamTwilight/twilightforest
+        cd twilightforest
+
+    - name: 设置权限
+      run: chmod +x gradlew
+
+    - name: 用Gradle构建
+      run: ./gradlew build
+
+    - name: 上传Jar
+      uses: actions/upload-artifact@v2
+      with:
+        name: "Result"
+        path: build/libs
