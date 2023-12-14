@@ -28,6 +28,11 @@ jobs:
         cd twilightforest
         chmod +x gradlew
 
+    - name: 修改编译版本
+      run: |
+        cd twilightforest
+        sed -i 's/1\.20\.4/1.20.1/g;s/47\.1\.70/47.1.81/g' gradle.properties
+
     - name: 用Gradle构建
       run: |
         cd twilightforest
@@ -37,4 +42,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: "Result"
-        path: build/libs
+        path: twilightforest/build/libs
