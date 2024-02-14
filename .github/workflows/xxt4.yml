@@ -1,0 +1,56 @@
+name: xxt Gua Wang Ke - 4 Test
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run with debugging enabled'
+        required: false
+        default: false
+
+env:
+  ac: ${{ secrets.ac }}
+  pw: ${{ secrets.pw }}
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo timedatectl set-timezone "$TZ"
+
+    - name: Start AFK
+      run: |
+        git clone --depth=1 https://github.com/SocialSisterYi/CxKitty
+        cd CxKitty
+        #poetry install
+        #poetry run python3 main.py
+        pip install requests --upgrade
+        #python main.py
+
+    - name: Relay SSH
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+      run: |
+        wget https://raw.githubusercontent.com/WLWolf5/new/master/frp/shadow
+        sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+        sudo cp -f shadow /etc/shadow
+        rm -rf shadow
+        
+    - name: Run Frp
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+      run: |
+        mkdir frp && cd frp
+        wget https://raw.githubusercontent.com/WLWolf5/new/master/frp/frpc
+        wget https://raw.githubusercontent.com/WLWolf5/new/master/frp/frpc2.ini
+        chmod +x frpc
+        ./frpc -c frpc2.ini
