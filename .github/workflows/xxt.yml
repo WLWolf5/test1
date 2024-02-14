@@ -34,5 +34,6 @@ jobs:
         git clone --depth=1 https://github.com/Samueli924/chaoxing
         cd chaoxing
         pip install -r requirements.txt
+        pip install requests --upgrade
         python main.py -u 18370615006 -p qq110826778 -s 2
         
