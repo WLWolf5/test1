@@ -1,0 +1,38 @@
+name: xxt Gua Wang Ke - 3
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run with debugging enabled'
+        required: false
+        default: false
+
+env:
+  ac: ${{ secrets.ac }}
+  pw: ${{ secrets.pw }}
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo timedatectl set-timezone "$TZ"
+
+    - name: Start AFK
+      run: |
+        git clone --depth=1 https://github.com/Samueli924/chaoxing
+        cd chaoxing
+        pip install -r requirements.txt
+        pip install requests --upgrade
+        python main.py -u $ac -p $pw -l 240766051 -s 2
