@@ -11,6 +11,8 @@ on:
         default: false
 
 env:
+  ac: ${{ secrets.ac }}
+  pw: ${{ secrets.pw }}
   TZ: Asia/Shanghai
 
 jobs:
@@ -32,5 +34,5 @@ jobs:
         git clone --depth=1 https://github.com/Samueli924/chaoxing
         cd chaoxing
         pip install -r requirements.txt
-        python main.py -u 18370615006 -p qq110826778 -l 239816174 -s 2
+        python main.py -u $ac -p $pw -s 2
         
