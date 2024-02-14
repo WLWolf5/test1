@@ -35,5 +35,5 @@ jobs:
         cd chaoxing
         pip install -r requirements.txt
         pip install requests --upgrade
-        python main.py -u 18370615006 -p qq110826778 -s 2
+        python main.py -u $ac -p $pw -l 240766031 -s 2
         
